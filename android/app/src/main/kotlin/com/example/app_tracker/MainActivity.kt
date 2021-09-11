@@ -113,28 +113,37 @@ class MainActivity: FlutterActivity() {
         )
         val map = ArrayMap<String, UsageStats>()
         val statCount = stats!!.size
+        val packageStatsMap = ArrayList<String>()
         for (i in 0 until statCount) {
             val pkgStats = stats[i]
+
             try {
                 val appInfo = mPm!!.getApplicationInfo(pkgStats.packageName, 0)
                 val label = appInfo.loadLabel(mPm!!).toString()
-                mAppLabelMap[pkgStats.packageName] = label
-                val existingStats = map[pkgStats.packageName]
-                if (existingStats == null) {
-                    map[pkgStats.packageName] = pkgStats
-                } else {
-                    existingStats.add(pkgStats)
-                }
+
+                packageStatsMap.add(label);
+                packageStatsMap.add(pkgStats.totalTimeForegroundServiceUsed.toString())
+
+//                mAppLabelMap[pkgStats.packageName] = label
+//                val existingStats = map[pkgStats.packageName]
+//                if (existingStats == null) {
+//                    map[pkgStats.packageName] = pkgStats
+//                } else {
+//                    existingStats.add(pkgStats)
+//                }
             } catch (e: PackageManager.NameNotFoundException) {
                 // This package may be gone.
             }
         }
-        mPackageStats.addAll(map.values)
+//        mPackageStats.addAll(map.values)
 
-        repeat(mPackageStats.size){
-          Log.e(mPackageStats[it].packageName, mPackageStats[it].totalTimeForegroundServiceUsed.toString())
-        }
-        methodCall.success(mPackageStats.toString())
+//        repeat(mPackageStats.size){
+//            packageStatsMap.add(mPackageStats[it].packageName)
+//            packageStatsMap.add(mPackageStats[it].totalTimeForegroundServiceUsed.toString())
+
+//            packageStatsMap[mPackageStats[it].packageName] = mPackageStats[it].totalTimeForegroundServiceUsed.toString()
+//        }
+        methodCall.success(packageStatsMap)
     }
 
 }

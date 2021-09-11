@@ -1,5 +1,5 @@
 import 'package:app_tracker/ui_pages/get_permission_screen.dart';
-import 'package:app_tracker/ui_pages/home.dart';
+import 'package:app_tracker/ui_pages/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting)
               return CircularProgressIndicator(color: Colors.black);
-            if (snapshot.data!) return Home();
+            if (snapshot.data!) return WelcomeScreen();
             return GetPermissionScreen();
           },
         ),

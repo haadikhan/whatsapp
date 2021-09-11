@@ -20,16 +20,61 @@ class _HomeState extends State<Home> {
       ),
       body: Container(
         child: FutureBuilder(
-            future: platform.invokeMethod('GetData'),
-            builder: (context, snapshot) {
-              print(snapshot);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [],
+          future: platform.invokeMethod('GetData'),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return CircularProgressIndicator();
+
+            if (snapshot.data != null) {
+              List<Object?> data = snapshot.data! as List<Object?>;
+              List<String> allAppNames = [];
+              List<String> allAppTimes = [];
+              for (int i = 0; i < data.length; i++) {
+                if (i.isEven) {
+                  allAppNames.add(data[i].toString());
+                } else {
+                  allAppTimes.add(data[i].toString());
+                }
+              }
+              Map<String, String> appData = {};
+              for (var i = 0; i < allAppNames.length; i++) {
+                appData.putIfAbsent(allAppNames[i], () => allAppTimes[i]);
+              }
+
+              appData.removeWhere((key, value) => int.tryParse(value) == 0);
+
+              return ListView(
+                children: List.generate(
+                  appData.length,
+                  (index) => ListTile(
+                    title: Text(appData.keys.toList()[index]),
+                    subtitle: Text(
+                      _printDuration(
+                        Duration(
+                          milliseconds:
+                              int.parse(appData.values.toList()[index]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               );
-            }),
+            }
+
+            return Center(
+              child: Text("No Data Found"),
+            );
+          },
+        ),
       ),
     );
+  }
+
+  String _printDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 }
 
