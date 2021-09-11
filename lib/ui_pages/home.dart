@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  static const platform = MethodChannel("getUsageDataChannel");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,28 +19,15 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Row(
-              children: [
-                FacebookOpenButton(),
-              ],
-            ),
-            Row(
-              children: [],
-            ),
-            Row(
-              children: [],
-            ),
-            Row(
-              children: [],
-            ),
-            Row(
-              children: [],
-            ),
-          ],
-        ),
+        child: FutureBuilder(
+            future: platform.invokeMethod('GetData'),
+            builder: (context, snapshot) {
+              print(snapshot);
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [],
+              );
+            }),
       ),
     );
   }
@@ -48,7 +38,7 @@ class FacebookOpenButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await launch('');
+        // await launch('');
       },
       child: Container(
         margin: EdgeInsets.all(5),
