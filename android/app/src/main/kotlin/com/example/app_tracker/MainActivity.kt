@@ -122,7 +122,7 @@ class MainActivity: FlutterActivity() {
                 val label = appInfo.loadLabel(mPm!!).toString()
 
                 packageStatsMap.add(label);
-                packageStatsMap.add(pkgStats.totalTimeForegroundServiceUsed.toString())
+                packageStatsMap.add(pkgStats.totalTimeInForeground.toString())
 
 //                mAppLabelMap[pkgStats.packageName] = label
 //                val existingStats = map[pkgStats.packageName]

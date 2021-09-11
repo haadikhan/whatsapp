@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
                 appData.putIfAbsent(allAppNames[i], () => allAppTimes[i]);
               }
 
-              appData.removeWhere((key, value) => int.tryParse(value) == 0);
+              appData.removeWhere((key, value) => int.parse(value) < 60000);
 
               return ListView(
                 children: List.generate(
