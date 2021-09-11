@@ -73,23 +73,24 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalTime
-    @RequiresApi(Build.VERSION_CODES.Q)
     private fun checkPermission() : Boolean {
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.PACKAGE_USAGE_STATS) != PackageManager.PERMISSION_GRANTED){
-            val appOps = context
-                .getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
-            val mode = appOps.unsafeCheckOpNoThrow(
-                AppOpsManager.OPSTR_GET_USAGE_STATS,
-                Process.myUid(), context.packageName
-            )
-            return if (mode == AppOpsManager.MODE_DEFAULT) {
                 granted = (context.checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED)
-                granted
-            } else {
-                granted = (mode == AppOpsManager.MODE_ALLOWED)
-                granted
-            }
+return granted
+        //            val appOps = context
+//                .getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+//            val mode = appOps.unsafeCheckOpNoThrow(
+//                AppOpsManager.OPSTR_GET_USAGE_STATS,
+//                Process.myUid(), context.packageName
+//            )
+//            return if (mode == AppOpsManager.MODE_DEFAULT) {
+//                granted
+//            } else {
+//                granted = (mode == AppOpsManager.MODE_ALLOWED)
+//                granted
+//            }
         } else {
             return true
         }
