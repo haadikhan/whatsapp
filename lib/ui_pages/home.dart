@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,6 +9,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   static const platform = MethodChannel("getUsageDataChannel");
+  int days = 1;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -19,52 +22,86 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: Container(
-        child: FutureBuilder(
-          future: platform.invokeMethod('GetData'),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting)
-              return CircularProgressIndicator();
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ToggleSwitch(
+                    minWidth: 150,
+                    initialLabelIndex: selectedIndex,
+                    cornerRadius: 20.0,
+                    activeFgColor: Colors.white,
+                    inactiveBgColor: Colors.grey,
+                    inactiveFgColor: Colors.white,
+                    totalSwitches: 2,
+                    labels: ['Last 24 Hours', 'Last 7 Days'],
+                    activeBgColor: [Colors.blue],
+                    onToggle: (index) {
+                      setState(() {
+                        selectedIndex = index;
+                        if (index == 0) days = 1;
+                        if (index == 1) days = 8;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: platform.invokeMethod('GetData', {"days": days}),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting)
+                    return Center(child: CircularProgressIndicator());
 
-            if (snapshot.data != null) {
-              List<Object?> data = snapshot.data! as List<Object?>;
-              List<String> allAppNames = [];
-              List<String> allAppTimes = [];
-              for (int i = 0; i < data.length; i++) {
-                if (i.isEven) {
-                  allAppNames.add(data[i].toString());
-                } else {
-                  allAppTimes.add(data[i].toString());
-                }
-              }
-              Map<String, String> appData = {};
-              for (var i = 0; i < allAppNames.length; i++) {
-                appData.putIfAbsent(allAppNames[i], () => allAppTimes[i]);
-              }
+                  if (snapshot.data != null) {
+                    List<Object?> data = snapshot.data! as List<Object?>;
+                    List<String> allAppNames = [];
+                    List<String> allAppTimes = [];
+                    for (int i = 0; i < data.length; i++) {
+                      if (i.isEven) {
+                        allAppNames.add(data[i].toString());
+                      } else {
+                        allAppTimes.add(data[i].toString());
+                      }
+                    }
+                    Map<String, String> appData = {};
+                    for (var i = 0; i < allAppNames.length; i++) {
+                      appData.putIfAbsent(allAppNames[i], () => allAppTimes[i]);
+                    }
 
-              appData.removeWhere((key, value) => int.parse(value) < 60000);
+                    appData
+                        .removeWhere((key, value) => int.parse(value) < 10000);
 
-              return ListView(
-                children: List.generate(
-                  appData.length,
-                  (index) => ListTile(
-                    title: Text(appData.keys.toList()[index]),
-                    subtitle: Text(
-                      _printDuration(
-                        Duration(
-                          milliseconds:
-                              int.parse(appData.values.toList()[index]),
+                    return ListView(
+                      children: List.generate(
+                        appData.length,
+                        (index) => ListTile(
+                          title: Text(appData.keys.toList()[index]),
+                          subtitle: Text(
+                            _printDuration(
+                              Duration(
+                                milliseconds:
+                                    int.parse(appData.values.toList()[index]),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            }
+                    );
+                  }
 
-            return Center(
-              child: Text("No Data Found"),
-            );
-          },
+                  return Center(
+                    child: Text("No Data Found"),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

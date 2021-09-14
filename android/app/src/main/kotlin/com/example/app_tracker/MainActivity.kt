@@ -44,7 +44,10 @@ class MainActivity: FlutterActivity() {
                         result.success(true)
                     }
                 }
-                "GetData" -> getData(result)
+                "GetData" -> {
+                    val days = call.argument<Int>("days")
+                    getData(result, days!!)
+                }
                 else ->{
                     result.notImplemented()
                 }
@@ -65,7 +68,10 @@ class MainActivity: FlutterActivity() {
                         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
                         startActivityForResult(intent, 1)
                     }
-                    "GetData" -> getData(result)
+                    "GetData" -> {
+                        val days = call.argument<Int>("days")
+                        getData(result, days!!)
+                    }
                     else ->{
                         result.notImplemented()
                     }
@@ -77,7 +83,6 @@ class MainActivity: FlutterActivity() {
     @ExperimentalTime
     private fun checkPermission() : Boolean {
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.PACKAGE_USAGE_STATS) != PackageManager.PERMISSION_GRANTED){
-
                     val appOps = context
                 .getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
             val mode = appOps.checkOpNoThrow(
@@ -98,19 +103,28 @@ class MainActivity: FlutterActivity() {
 
     @ExperimentalTime
     @RequiresApi(Build.VERSION_CODES.Q)
-    private fun  getData(methodCall: Result) {
-        val mAppLabelMap = ArrayMap<String, String>()
-        val mPackageStats = ArrayList<UsageStats>()
+    private fun  getData(methodCall: Result, days: Int) {
+//        val mAppLabelMap = ArrayMap<String, String>()
+//        val mPackageStats = ArrayList<UsageStats>()
         mPm = packageManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             usageStatsManager = getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
         }
         val cal = Calendar.getInstance()
-        cal.add(Calendar.DAY_OF_YEAR, -1)
-        val stats = usageStatsManager!!.queryUsageStats(
-            UsageStatsManager.INTERVAL_BEST,
-            cal.timeInMillis, System.currentTimeMillis()
-        )
+        Log.e("Calender", cal.toString())
+        cal.add(Calendar.DAY_OF_YEAR, -days)
+        Log.e("Calender", cal.toString())
+        val stats = if(days == 1) {
+            usageStatsManager!!.queryUsageStats(
+                UsageStatsManager.INTERVAL_BEST,
+                cal.timeInMillis, System.currentTimeMillis()
+            )
+        } else {
+            usageStatsManager!!.queryUsageStats(
+                UsageStatsManager.INTERVAL_WEEKLY,
+                cal.timeInMillis, System.currentTimeMillis()
+            )
+        }
         val map = ArrayMap<String, UsageStats>()
         val statCount = stats!!.size
         val packageStatsMap = ArrayList<String>()
@@ -146,6 +160,13 @@ class MainActivity: FlutterActivity() {
 //            packageStatsMap[mPackageStats[it].packageName] = mPackageStats[it].totalTimeForegroundServiceUsed.toString()
 //        }
         methodCall.success(packageStatsMap)
+    }
+
+    private fun getTime(milliseconds : Long) : String {
+        val seconds = (milliseconds / 1000)  % 60
+        val minutes = (milliseconds / (1000 * 60) % 60)
+        val hours = (milliseconds / (1000 * 60 * 60) % 24)
+        return "${hours}: ${minutes}:$seconds"
     }
 
 
