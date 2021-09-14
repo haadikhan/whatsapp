@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:app_tracker/ui_pages/navigation_tabs.dart';
-import 'package:app_tracker/ui_pages/welcome_screen.dart';
+import 'package:app_tracker/services/auth_service.dart';
+import 'package:app_tracker/services/database_service.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -10,14 +10,19 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           leading: InkWell(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => (WelcomeScreen())));
+              Navigator.pop(context);
             },
             child: Icon(
               Icons.arrow_back,
@@ -35,173 +40,177 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(
                 children: [
-                  SignupText(),
+                  Text(
+                    "Fill the form to signup",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 20),
-                  SignupForm(),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Name",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
+                                  borderRadius: BorderRadius.circular(12)),
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextFormField(
+                                controller: nameController,
+                                decoration: InputDecoration(hintText: "farhad"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Email",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
+                                  borderRadius: BorderRadius.circular(12)),
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextFormField(
+                                controller: emailController,
+                                decoration:
+                                    InputDecoration(hintText: "abc@gm ail.com"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "password",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
+                                  borderRadius: BorderRadius.circular(12)),
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextFormField(
+                                controller: passwordController,
+                                decoration: InputDecoration(hintText: "*****"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Re enter password",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
+                                  borderRadius: BorderRadius.circular(12)),
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextFormField(
+                                controller: ageController,
+                                decoration: InputDecoration(hintText: "age"),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Phone no",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey, width: 2),
+                                  borderRadius: BorderRadius.circular(12)),
+                              margin: EdgeInsets.all(5),
+                              padding: EdgeInsets.only(left: 10),
+                              child: TextFormField(
+                                controller: phoneController,
+                                decoration:
+                                    InputDecoration(hintText: "0311-2233445"),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ]),
                   const SizedBox(height: 40),
-                  SignupButton(),
+                  Center(
+                    child: InkWell(
+                      onTap: () async {
+                        await Auth().signUpWithEmailPassword(
+                            emailController.text, passwordController.text);
+                        await FirebaseCollections().createUser(
+                            nameController.text,
+                            emailController.text,
+                            ageController.text,
+                            phoneController.text);
+                        Navigator.pop(context);
+                        // Navigator.push(context,
+                        //     MaterialPageRoute(builder: (context) => NavigationTabs()));
+                      },
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 100, vertical: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(17),
+                          color: Colors.blue,
+                        ),
+                        child: Text(
+                          'Sign up',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
         ));
-  }
-}
-
-class SignupText extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      "Fill the form to signup",
-      style: TextStyle(
-          color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
-    );
-  }
-}
-
-class SignupForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Name",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2),
-                    borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.only(left: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: "farhad"),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Email",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2),
-                    borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.only(left: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: "abc@gmail.com"),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "password",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2),
-                    borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.only(left: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: "*****"),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Re enter password",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2),
-                    borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.only(left: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: "age"),
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Phone no",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2),
-                    borderRadius: BorderRadius.circular(12)),
-                margin: EdgeInsets.all(5),
-                padding: EdgeInsets.only(left: 10),
-                child: TextFormField(
-                  decoration: InputDecoration(hintText: "0311-2233445"),
-                ),
-              ),
-            ],
-          ),
-        ]);
-  }
-}
-
-class SignupButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: InkWell(
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => NavigationTabs()));
-        },
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17),
-            color: Colors.blue,
-          ),
-          child: Text(
-            'Sign up',
-            style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
-          ),
-        ),
-      ),
-    );
   }
 }

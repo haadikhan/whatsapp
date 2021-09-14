@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:app_tracker/ui_pages/signup_screen.dart';
+
+import 'package:app_tracker/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -77,9 +78,8 @@ class LogoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignupScreen()));
+        onTap: () async {
+          await Auth().logOut();
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 100, vertical: 20),
@@ -91,7 +91,7 @@ class LogoutButton extends StatelessWidget {
             color: Colors.blue,
           ),
           child: Text(
-            'Sign up',
+            'Log Out',
             style: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),

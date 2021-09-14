@@ -1,6 +1,7 @@
 import 'dart:ui';
 
-import 'package:app_tracker/ui_pages/signup_screen.dart';
+import 'package:app_tracker/ui_pages/signin_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -18,15 +19,25 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            HeadingText(),
-            const SizedBox(height: 100),
-            GetStartedButton(),
-          ],
-        ),
+      body: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          print(snapshot);
+          if (!snapshot.hasError) {
+            return Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  HeadingText(),
+                  const SizedBox(height: 100),
+                  GetStartedButton(),
+                ],
+              ),
+            );
+          }
+
+          return Center(child: CircularProgressIndicator());
+        },
       ),
     );
   }
@@ -59,8 +70,8 @@ class GetStartedButton extends StatelessWidget {
     return Center(
       child: InkWell(
         onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => SignupScreen()));
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SigninScreen()));
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
