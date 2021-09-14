@@ -121,8 +121,10 @@ class MainActivity: FlutterActivity() {
                 val appInfo = mPm!!.getApplicationInfo(pkgStats.packageName, 0)
                 val label = appInfo.loadLabel(mPm!!).toString()
 
-                packageStatsMap.add(label);
-                packageStatsMap.add(pkgStats.totalTimeInForeground.toString())
+                if(checkLabel(label)){
+                    packageStatsMap.add(label);
+                    packageStatsMap.add(pkgStats.totalTimeInForeground.toString())
+                }
 
 //                mAppLabelMap[pkgStats.packageName] = label
 //                val existingStats = map[pkgStats.packageName]
@@ -144,6 +146,18 @@ class MainActivity: FlutterActivity() {
 //            packageStatsMap[mPackageStats[it].packageName] = mPackageStats[it].totalTimeForegroundServiceUsed.toString()
 //        }
         methodCall.success(packageStatsMap)
+    }
+
+
+    private fun checkLabel(label: String) : Boolean {
+        return when(label) {
+            "YouTube" -> true
+            "WhatsApp" -> true
+            "Facebook" -> true
+            "Snapchat" -> true
+            "Instagram" -> true
+            else -> false
+        }
     }
 
 }
