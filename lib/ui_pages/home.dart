@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class Home extends StatefulWidget {
@@ -11,6 +12,33 @@ class _HomeState extends State<Home> {
   static const platform = MethodChannel("getUsageDataChannel");
   int days = 1;
   int selectedIndex = 0;
+
+  showNotifications(String label, int id) async {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    AndroidNotificationDetails notificationAndroidSpecifics =
+        AndroidNotificationDetails(
+            'groupChannelId', 'groupChannelName', 'groupChannelDescription',
+            importance: Importance.max,
+            priority: Priority.high,
+            showWhen: false);
+
+    NotificationDetails notificationPlatformSpecifics =
+        NotificationDetails(android: notificationAndroidSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+        id,
+        '$label',
+        'This app has been used for more than 1 hour',
+        notificationPlatformSpecifics,
+        payload: 'item x');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,17 +108,21 @@ class _HomeState extends State<Home> {
                     return ListView(
                       children: List.generate(
                         appData.length,
-                        (index) => ListTile(
-                          title: Text(appData.keys.toList()[index]),
-                          subtitle: Text(
-                            _printDuration(
-                              Duration(
-                                milliseconds:
-                                    int.parse(appData.values.toList()[index]),
+                        (index) {
+                          String label = appData.keys.toList()[index];
+                          int milliseconds =
+                              int.parse(appData.values.toList()[index]);
+                          if (milliseconds > 3600000)
+                            showNotifications(label, index);
+                          return ListTile(
+                            title: Text(label),
+                            subtitle: Text(
+                              _printDuration(
+                                Duration(milliseconds: milliseconds),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     );
                   }
