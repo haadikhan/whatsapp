@@ -39,72 +39,72 @@ class SignInView extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: NetworkImage(
-                        'https://cdn.images.express.co.uk/img/dynamic/59/590x/WhatsApp-Share-Data-Facebook-UK-932113.jpg'),
-                    fit: BoxFit.cover)),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Column(
-                children: [
-                  SigninText(),
-                  const SizedBox(height: 20),
-                  Text(
-                    "Email",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SigninText(),
+                const SizedBox(height: 20),
+                Text(
+                  "Email",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2),
+                      borderRadius: BorderRadius.circular(12)),
+                  margin: EdgeInsets.all(5),
+                  padding: EdgeInsets.only(left: 10),
+                  child: TextFormField(
+                    controller: emailController,
+                    decoration: InputDecoration(hintText: "abc@gmail.com"),
                   ),
-                  Container(
-                    padding: EdgeInsets.only(left: 10),
-                    color: Colors.grey[850],
-                    child: TextFormField(
-                      controller: emailController,
-                      decoration: InputDecoration(hintText: "abc@gmail.com"),
-                    ),
+                ),
+                Text(
+                  "password",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2),
+                      borderRadius: BorderRadius.circular(12)),
+                  margin: EdgeInsets.all(5),
+                  padding: EdgeInsets.only(left: 10),
+                  child: TextFormField(
+                    controller: passwordController,
+                    decoration: InputDecoration(hintText: "*****"),
                   ),
-                  Text(
-                    "password",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(left: 10),
-                    color: Colors.grey[850],
-                    child: TextFormField(
-                      controller: passwordController,
-                      decoration: InputDecoration(hintText: "*****"),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Center(
-                    child: InkWell(
-                      onTap: () async {
-                        await Auth().signInWithEmailPassword(
-                            emailController.text, passwordController.text);
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 125, vertical: 20),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[700],
-                        ),
-                        child: Text(
-                          'SignIn',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
+                ),
+                const SizedBox(height: 40),
+                Center(
+                  child: InkWell(
+                    onTap: () async {
+                      await Auth().signInWithEmailPassword(
+                          emailController.text, passwordController.text);
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        color: Colors.blue,
+                      ),
+                      child: Text(
+                        'SignIn',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SignUpButton(),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                SignUpButton(),
+              ],
             ),
           ),
         ],
@@ -118,7 +118,8 @@ class SigninText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       "Signup to get  started",
-      style: TextStyle(color: Colors.grey, fontSize: 16),
+      style: TextStyle(
+          color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
     );
   }
 }
@@ -133,9 +134,10 @@ class SignUpButton extends StatelessWidget {
               context, MaterialPageRoute(builder: (context) => SignupScreen()));
         },
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 125, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 15),
           decoration: BoxDecoration(
-            color: Colors.grey[700],
+            borderRadius: BorderRadius.circular(18),
+            color: Colors.blue,
           ),
           child: Text(
             'Sign Up',

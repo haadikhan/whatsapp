@@ -21,17 +21,17 @@ environment:
   sdk: ">=2.14.0 <3.0.0"
 
 dependencies:
+  cloud_firestore: ^2.5.3
+  cupertino_icons: ^1.0.3
+  firebase: ^9.0.2
+  firebase_auth: ^3.1.1
+  firebase_core: ^1.6.0
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.3
   flutter_bloc: ^7.2.0
-  firebase: ^9.0.2
-  firebase_core: ^1.6.0
-  firebase_auth: ^3.1.1
-  cloud_firestore: ^2.5.3
-  toggle_switch: ^1.2.0
-  shared_preferences: ^2.0.8
   flutter_local_notifications: ^8.2.0
+  shared_preferences: ^2.0.8
+  toggle_switch: ^1.2.0
 
 dev_dependencies:
   flutter_test:

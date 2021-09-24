@@ -1,6 +1,6 @@
 import 'package:app_tracker/ui_pages/home.dart';
 import 'package:app_tracker/ui_pages/profile_screen.dart';
-import 'package:app_tracker/ui_pages/settings_screen.dart';
+
 import 'package:app_tracker/ui_pages/usage_history.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,6 @@ class _NavigationTabsState extends State<NavigationTabs> {
   int _selectedIndex = 0;
   List<Widget> screens = [
     Home(),
-    SettingsScreen(),
     Profile(),
     UsageHistory(),
   ];
@@ -48,8 +47,6 @@ class _NavigationTabsState extends State<NavigationTabs> {
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(Icons.explore), label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.settings), label: 'Settings'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.people), label: 'Profile'),
                 BottomNavigationBarItem(
