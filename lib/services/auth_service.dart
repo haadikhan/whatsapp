@@ -7,8 +7,12 @@ class Auth {
   }
 
   Future signInWithEmailPassword(String email, String password) async {
-    await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      throw e;
+    }
   }
 
   Future logOut() async {

@@ -28,9 +28,17 @@ class SigninScreenState extends State<SigninScreen> {
   }
 }
 
-class SignInView extends StatelessWidget {
+class SignInView extends StatefulWidget {
+  @override
+  State<SignInView> createState() => _SignInViewState();
+}
+
+class _SignInViewState extends State<SignInView> {
   final TextEditingController emailController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -81,29 +89,45 @@ class SignInView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-                Center(
-                  child: InkWell(
-                    onTap: () async {
-                      await Auth().signInWithEmailPassword(
-                          emailController.text, passwordController.text);
-                    },
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 80, vertical: 15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        color: Colors.blue,
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : Center(
+                        child: InkWell(
+                          onTap: () async {
+                            setState(() => isLoading = true);
+                            Auth()
+                                .signInWithEmailPassword(emailController.text,
+                                    passwordController.text)
+                                .onError(
+                              (error, stackTrace) {
+                                setState(() => isLoading = false);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text(error.toString().split("]").last),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 80, vertical: 15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              color: Colors.blue,
+                            ),
+                            child: Text(
+                              'SignIn',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                       ),
-                      child: Text(
-                        'SignIn',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 20),
-                SignUpButton(),
+                isLoading ? Container() : SignUpButton(),
               ],
             ),
           ),

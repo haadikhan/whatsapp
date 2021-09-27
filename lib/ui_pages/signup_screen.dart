@@ -15,6 +15,7 @@ class _SignupScreenState extends State<SignupScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -179,14 +180,25 @@ class _SignupScreenState extends State<SignupScreen> {
                   Center(
                     child: InkWell(
                       onTap: () async {
-                        await Auth().signUpWithEmailPassword(
-                            emailController.text, passwordController.text);
-                        await FirebaseCollections().createUser(
-                            nameController.text,
-                            emailController.text,
-                            ageController.text,
-                            phoneController.text);
-                        Navigator.pop(context);
+                        setState(() => isLoading = true);
+                        Auth()
+                            .signUpWithEmailPassword(
+                                emailController.text, passwordController.text)
+                            .whenComplete(() async {
+                          await FirebaseCollections().createUser(
+                              nameController.text,
+                              emailController.text,
+                              ageController.text,
+                              phoneController.text);
+                          Navigator.pop(context);
+                        }).onError(
+                          (error, stackTrace) {
+                            setState(() => isLoading = false);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content:
+                                    Text(error.toString().split("]").last)));
+                          },
+                        );
                         // Navigator.push(context,
                         //     MaterialPageRoute(builder: (context) => NavigationTabs()));
                       },
