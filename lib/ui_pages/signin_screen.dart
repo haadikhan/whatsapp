@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:app_tracker/services/auth_service.dart';
+import 'package:app_tracker/services/database_service.dart';
 import 'package:app_tracker/ui_pages/navigation_tabs.dart';
 import 'package:app_tracker/ui_pages/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,7 +21,15 @@ class SigninScreenState extends State<SigninScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return CircularProgressIndicator();
-          if (snapshot.data != null) return NavigationTabs();
+          if (snapshot.data != null)
+            return FutureBuilder(
+              future: FirebaseCollections().getUser(),
+              builder: (context, userSnapshot) {
+                if (userSnapshot.connectionState == ConnectionState.done)
+                  return NavigationTabs(userData: userSnapshot.data);
+                return Center(child: CircularProgressIndicator());
+              },
+            );
           return SignInView();
         },
       ),

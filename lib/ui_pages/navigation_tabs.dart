@@ -1,21 +1,18 @@
 import 'package:app_tracker/ui_pages/home.dart';
 import 'package:app_tracker/ui_pages/profile_screen.dart';
-
 import 'package:app_tracker/ui_pages/usage_history.dart';
 import 'package:flutter/material.dart';
 
 class NavigationTabs extends StatefulWidget {
+  final userData;
+
+  const NavigationTabs({Key? key, this.userData}) : super(key: key);
   @override
   _NavigationTabsState createState() => _NavigationTabsState();
 }
 
 class _NavigationTabsState extends State<NavigationTabs> {
   int _selectedIndex = 0;
-  List<Widget> screens = [
-    Home(),
-    Profile(),
-    UsageHistory(),
-  ];
   void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -24,6 +21,12 @@ class _NavigationTabsState extends State<NavigationTabs> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = [
+      Home(),
+      Profile(userData: widget.userData),
+      UsageHistory(),
+    ];
+
     return Scaffold(
         body: Container(
           child: screens.elementAt(_selectedIndex),

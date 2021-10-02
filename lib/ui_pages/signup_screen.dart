@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:app_tracker/services/auth_service.dart';
 import 'package:app_tracker/services/database_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -185,11 +186,13 @@ class _SignupScreenState extends State<SignupScreen> {
                             .signUpWithEmailPassword(
                                 emailController.text, passwordController.text)
                             .whenComplete(() async {
+                          User user = FirebaseAuth.instance.currentUser!;
                           await FirebaseCollections().createUser(
                               nameController.text,
                               emailController.text,
                               ageController.text,
-                              phoneController.text);
+                              phoneController.text,
+                              user.uid);
                           Navigator.pop(context);
                         }).onError(
                           (error, stackTrace) {

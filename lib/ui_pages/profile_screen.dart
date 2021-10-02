@@ -4,6 +4,9 @@ import 'package:app_tracker/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
+  final userData;
+
+  const Profile({Key? key, this.userData}) : super(key: key);
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -21,7 +24,7 @@ class _ProfileState extends State<Profile> {
       body: Container(
         child: ListView(
           children: [
-            ProfilePictureAndName(),
+            ProfilePictureAndName(userData: widget.userData),
             ProfileDetails(),
             LogoutButton(),
           ],
@@ -32,6 +35,9 @@ class _ProfileState extends State<Profile> {
 }
 
 class ProfilePictureAndName extends StatelessWidget {
+  final userData;
+
+  const ProfilePictureAndName({Key? key, this.userData}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -47,7 +53,7 @@ class ProfilePictureAndName extends StatelessWidget {
               )),
         ),
         Text(
-          'Muhammad Farhad',
+          userData['name'],
           style: TextStyle(
               color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 25),
         )
