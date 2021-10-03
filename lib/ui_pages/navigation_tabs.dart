@@ -1,6 +1,6 @@
 import 'package:app_tracker/ui_pages/home.dart';
 import 'package:app_tracker/ui_pages/profile_screen.dart';
-import 'package:app_tracker/ui_pages/usage_history.dart';
+
 import 'package:flutter/material.dart';
 
 class NavigationTabs extends StatefulWidget {
@@ -24,7 +24,6 @@ class _NavigationTabsState extends State<NavigationTabs> {
     List<Widget> screens = [
       Home(),
       Profile(userData: widget.userData),
-      UsageHistory(),
     ];
 
     return Scaffold(
@@ -52,8 +51,6 @@ class _NavigationTabsState extends State<NavigationTabs> {
                     icon: Icon(Icons.explore), label: 'Home'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.people), label: 'Profile'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.history), label: 'History'),
               ],
             )));
   }

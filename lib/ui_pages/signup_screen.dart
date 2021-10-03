@@ -5,6 +5,8 @@ import 'package:app_tracker/services/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'navigation_tabs.dart';
+
 class SignupScreen extends StatefulWidget {
   @override
   _SignupScreenState createState() => _SignupScreenState();
@@ -202,8 +204,10 @@ class _SignupScreenState extends State<SignupScreen> {
                                     Text(error.toString().split("]").last)));
                           },
                         );
-                        // Navigator.push(context,
-                        //     MaterialPageRoute(builder: (context) => NavigationTabs()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NavigationTabs()));
                       },
                       child: Container(
                         padding:
