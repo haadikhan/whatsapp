@@ -67,9 +67,6 @@ class ProfileDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _listTileForProfileDetail('Membership', "Regular Member", () {}),
-        _listTileForProfileDetail('Community', "Facebook", () {}),
-        _listTileForProfileDetail('Streaming ', "Live", () {}),
         _listTileForProfileDetail('Personal', "Account", () {}),
         _listTileForProfileDetail('Application', "About", () {}),
         _listTileForProfileDetail('protection', "Privacy", () {}),

@@ -114,11 +114,22 @@ class _HomeState extends State<Home> {
                               int.parse(appData.values.toList()[index]);
                           if (milliseconds > 3600000)
                             showNotifications(label, index);
-                          return ListTile(
-                            title: Text(label),
-                            subtitle: Text(
-                              _printDuration(
-                                Duration(milliseconds: milliseconds),
+                          return Container(
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black,
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                label,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                _printDuration(
+                                  Duration(milliseconds: milliseconds),
+                                ),
                               ),
                             ),
                           );
