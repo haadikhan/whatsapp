@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:app_tracker/services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -66,6 +67,9 @@ class ProfileDetails extends StatelessWidget {
     return Column(
       children: [
         _email(),
+        _status(),
+        _help(),
+        _about(),
       ],
     );
   }
@@ -77,7 +81,67 @@ class ProfileDetails extends StatelessWidget {
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       subtitle: Text(
-        userData['email'],
+        FirebaseAuth.instance.currentUser!.email.toString(),
+        style: TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 17),
+      ),
+      trailing: InkWell(
+        child: Icon(
+          Icons.arrow_forward,
+          color: Colors.white30,
+        ),
+      ),
+    );
+  }
+
+  Widget _status() {
+    return ListTile(
+      title: Text(
+        "Status",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        'live',
+        style: TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 17),
+      ),
+      trailing: InkWell(
+        child: Icon(
+          Icons.arrow_forward,
+          color: Colors.white30,
+        ),
+      ),
+    );
+  }
+
+  Widget _about() {
+    return ListTile(
+      title: Text(
+        "About",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        'know about this app',
+        style: TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 17),
+      ),
+      trailing: InkWell(
+        child: Icon(
+          Icons.arrow_forward,
+          color: Colors.white30,
+        ),
+      ),
+    );
+  }
+
+  Widget _help() {
+    return ListTile(
+      title: Text(
+        "Help",
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      subtitle: Text(
+        'Get help',
         style: TextStyle(
             color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 17),
       ),
